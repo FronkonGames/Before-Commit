@@ -2,7 +2,8 @@
   "name": "before-commit",
   "displayName": "Before Commit",
   "description": "Shows file sizes in the Source Control view before committing",
-  "version": "0.2.0",
+  "version": "0.3.0",
+  "icon": "images/icon.png",
   "keywords": [
     "before commit",
     "source control",

@@ -188,13 +188,12 @@ class GitFileItem extends vscode.TreeItem {
     console.log(`Creating GitFileItem: ${label}, size: ${size}, status: ${status}`);
     this.tooltip = `${label} (${size})`;
     this.description = `${size} - ${status}`;
-    
+    this.contextValue = 'gitFile';
+
     // Set icon based on status using ThemeIcon
     console.log(`Setting icon for status: ${status}`);
     try {
       if (status === 'Modified') {
-        this.iconPath = vscode.ThemeIcon.File;
-        // Or use a codicon directly
         this.iconPath = { id: 'edit' };
       } else if (status === 'Added') {
         this.iconPath = { id: 'add' };
@@ -213,7 +212,6 @@ class GitFileItem extends vscode.TreeItem {
     if (sizeInBytes > sizeLimit) {
       console.log('File exceeds size limit, setting contextValue and resourceUri');
       // Set a custom context value to identify large files
-      this.contextValue = 'largeFile';
       
       try {
         // Use an absolute path for the resourceUri
@@ -234,8 +232,6 @@ class GitFileItem extends vscode.TreeItem {
       }
     }
   }
-
-  contextValue = 'gitFile';
 }
 
 export function activate(context: vscode.ExtensionContext) {
