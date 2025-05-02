@@ -13,11 +13,12 @@ This extension highlights files that exceed a configurable size limit in the Sou
 
 ## Features
 
-- Integrates directly with the existing "Changes" view in the Source Control panel
-- Displays file sizes in tooltips when hovering over files
-- Shows a badge with the count of large files in the "Changes" section
+- Shows a dedicated "Before Commit" panel in the Source Control view
+- Displays a warning icon for files that exceed the size limit
+- Shows file sizes in tooltips when hovering over files
+- Provides a status bar indicator showing the count of large files
 - Updates automatically when files change
-- Highlights files that exceed a configurable size limit with a customizable background color
+- Allows quick navigation to large files
 
 ## Requirements
 
@@ -28,16 +29,20 @@ This extension highlights files that exceed a configurable size limit in the Sou
 
 1. Open a folder containing a Git repository
 2. Navigate to the Source Control view in VS Code
-3. Files exceeding the size limit will be highlighted with a red background (configurable)
-4. Hover over files to see their size information
-5. The "Changes" section will show a badge with the count of large files
+3. The "Before Commit" panel will show files that exceed the size limit
+4. Click on any file in the list to open it
+5. Use the refresh button in the panel to manually update the list
+6. Hover over files to see their size
 
 ## Extension Settings
 
 This extension contributes the following settings:
 
-* `beforeCommit.sizeLimit`: File size limit in MB (default: 100). Files larger than this will be highlighted.
-* `beforeCommit.warningColor`: Background color for files that exceed the size limit (default: #ff000033 - semi-transparent red).
+* `beforeCommit.sizeLimit`: File size limit in MB. Files larger than this will be highlighted (default: 100MB)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 

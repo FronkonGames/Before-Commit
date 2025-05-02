@@ -1,8 +1,15 @@
 {
   "name": "before-commit",
+  "version": "0.0.6",
   "displayName": "Before Commit",
   "description": "Shows file sizes in the Source Control view before committing",
-  "version": "0.7.0",
+  "author": "Martin Bustos",
+  "publisher": "FronkonGames",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FronkonGames/Before-Commit"
+  },
   "icon": "images/icon.png",
   "keywords": [
     "before commit",
@@ -11,36 +18,48 @@
     "file size limit",
     "file size warning",
     "file size highlight"
-  ],
-  "author": "Martin Bustos",
-  "publisher": "FronkonGames",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/FronkonGames/Before-Commit"
-  },  
+  ],  
   "engines": {
     "vscode": "^1.99.0"
   },
-  "categories": [
-    "SCM Providers",
-    "Other"
+  "activationEvents": [
+    "onView:scm"
   ],
-  "activationEvents": [],
   "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
   "contributes": {
     "commands": [
       {
-        "command": "beforeCommit.refresh",
+        "command": "beforeCommit.refreshLargeFiles",
+        "title": "Before Commit: Refresh Large Files List"
+      },
+      {
+        "command": "beforeCommitLargeFiles.refresh",
         "title": "Refresh",
         "icon": "$(refresh)"
       }
     ],
-    "menus": {
-      "scm/title": [
+    "views": {
+      "scm": [
         {
-          "command": "beforeCommit.refresh",
-          "when": "scmProvider == git",
+          "id": "beforeCommitLargeFiles",
+          "name": "Before Commit",
+          "when": "scmProvider == git"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "beforeCommitLargeFiles.refresh",
+          "when": "view == beforeCommitLargeFiles",
           "group": "navigation"
         }
       ]
@@ -52,28 +71,14 @@
           "type": "number",
           "default": 100,
           "description": "File size limit in MB. Files larger than this will be highlighted."
-        },
-        "beforeCommit.warningColor": {
-          "type": "string",
-          "default": "#ff000033",
-          "description": "Background color for files that exceed the size limit. Use RGBA hex format (e.g., #ff000033 for semi-transparent red)."
         }
       }
     }
   },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts"
-  },
   "devDependencies": {
-    "@types/node": "^14.18.63",
+    "@types/node": "^16.18.126",
     "@types/vscode": "^1.99.1",
-    "@typescript-eslint/eslint-plugin": "^4.26.0",
-    "@typescript-eslint/parser": "^4.26.0",
-    "eslint": "^7.32.0",
-    "typescript": "^4.9.5"
+    "eslint": "^8.57.1",
+    "typescript": "^5.8.3"
   }
 }
