@@ -1,6 +1,13 @@
+<div align="center">
+  <img src="images/icon.png" width="256" height="256" alt="Before Commit Icon">
+  <h1>Before Commit Extension for VS Code</h1>
+</div>
+
+<div align="center">
+
 [![Downloads](https://img.shields.io/visual-studio-marketplace/d/FronkonGames.before-commit)](https://marketplace.visualstudio.com/items?itemName=FronkonGames.before-commit) [![Rating](https://img.shields.io/visual-studio-marketplace/r/FronkonGames.before-commit)](https://marketplace.visualstudio.com/items?itemName=FronkonGames.before-commit) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# Before Commit Extension for VS Code
+</div>
 
 This extension shows the size of files in the Source Control view before committing them.
 

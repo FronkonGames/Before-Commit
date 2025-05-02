@@ -53,7 +53,6 @@ class BeforeCommitProvider implements vscode.TreeDataProvider<GitFileItem> {
   }
 
   async getGitFiles(): Promise<void> {
-    console.log('Getting git files, workspace root:', this.workspaceRoot);
     if (!this.workspaceRoot) {
       this.gitFiles = [];
       return;
@@ -61,28 +60,26 @@ class BeforeCommitProvider implements vscode.TreeDataProvider<GitFileItem> {
 
     try {
       // Get git status
-      console.log('Executing git status command');
       const { stdout } = await execAsync('git status --porcelain', { cwd: this.workspaceRoot });
       
       const files: GitFile[] = [];
       const lines = stdout.split('\n').filter(line => line.trim() !== '');
-      console.log(`Found ${lines.length} changed files`);
       
       for (const line of lines) {
         const status = line.substring(0, 2).trim();
         const filePath = line.substring(3).trim();
-        console.log(`Processing file: ${filePath} with status: ${status}`);
-        
-        if (!filePath) {
-          console.log('Empty file path, skipping');
-          continue;
-        }
-        
         const fullPath = path.join(this.workspaceRoot, filePath);
-        console.log(`Full path: ${fullPath}`);
         
         try {
+          // Check if it's a directory
           const stats = fs.statSync(fullPath);
+          
+          // Skip directories
+          if (stats.isDirectory()) {
+            console.log(`Skipping directory: ${filePath}`);
+            continue;
+          }
+          
           const fileSizeInBytes = stats.size;
           let fileSize: string;
           
@@ -112,7 +109,6 @@ class BeforeCommitProvider implements vscode.TreeDataProvider<GitFileItem> {
       }
       
       this.gitFiles = files;
-      console.log(`Updated gitFiles array with ${files.length} files`);
     } catch (error) {
       console.error('Error getting git files:', error);
       this.gitFiles = [];
