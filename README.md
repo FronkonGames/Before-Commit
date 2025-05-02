@@ -9,15 +9,15 @@
 
 </div>
 
-This extension shows the size of files in the Source Control view before committing them.
+This extension highlights files that exceed a configurable size limit in the Source Control view before committing them.
 
 ## Features
 
-- Displays file sizes next to files in a dedicated "Before Commit" view in the Source Control panel
+- Integrates directly with the existing "Changes" view in the Source Control panel
+- Displays file sizes in tooltips when hovering over files
 - Updates automatically when files change
-- Shows file status (Modified, Added, Deleted, etc.)
-- Click on a file to open it
 - Highlights files that exceed a configurable size limit with a customizable background color
+- Adds a warning color to files that are too large
 
 ## Requirements
 
@@ -28,9 +28,8 @@ This extension shows the size of files in the Source Control view before committ
 
 1. Open a folder containing a Git repository
 2. Navigate to the Source Control view in VS Code
-3. Look for the "Before Commit" section
-4. Files will be listed with their sizes and status
-5. Files exceeding the size limit will be highlighted with a red background (configurable)
+3. Files exceeding the size limit will be highlighted with a red background (configurable)
+4. Hover over files to see their size information
 
 ## Extension Settings
 

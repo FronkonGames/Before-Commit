@@ -2,7 +2,7 @@
   "name": "before-commit",
   "displayName": "Before Commit",
   "description": "Shows file sizes in the Source Control view before committing",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "icon": "images/icon.png",
   "keywords": [
     "before commit",
@@ -42,15 +42,14 @@
     "commands": [
       {
         "command": "beforeCommit.refresh",
-        "title": "Refresh",
+        "title": "Refresh File Size Decorations",
         "icon": "$(refresh)"
       }
     ],
     "menus": {
-      "view/title": [
+      "scm/title": [
         {
           "command": "beforeCommit.refresh",
-          "when": "view == beforeCommit",
           "group": "navigation"
         }
       ]
