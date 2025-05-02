@@ -50,6 +50,9 @@ async function applyDecorations(repository: any, context: vscode.ExtensionContex
       context.subscriptions.push(largeFileDecoration);
     }
     
+    // Counter for files exceeding size limit
+    let largeFilesCount = 0;
+    
     // Apply decorations to each resource
     for (const resource of resources) {
       try {
@@ -73,6 +76,9 @@ async function applyDecorations(repository: any, context: vscode.ExtensionContex
         
         // Apply background color if file size exceeds limit
         if (exceedsSizeLimit(fileSizeInBytes, sizeLimit)) {
+          // Increment counter
+          largeFilesCount++;
+          
           // Apply decoration to the file
           const editors = vscode.window.visibleTextEditors.filter(
             editor => editor.document.uri.fsPath === filePath
@@ -93,6 +99,31 @@ async function applyDecorations(repository: any, context: vscode.ExtensionContex
       } catch (error) {
         // File might be deleted or inaccessible
         console.error(`Error processing file: ${resource.resourceUri.fsPath}`, error);
+      }
+    }
+    
+    // Update the Changes section badge with the count of large files
+    if (repository.sourceControl) {
+      if (largeFilesCount > 0) {
+        repository.sourceControl.inputBox.placeholder = `Message (${largeFilesCount} large files)`;
+        
+        // Add a badge to the Changes section
+        const changesGroup = repository.sourceControl.groups.find((group: any) => group.id === 'workingTree');
+        if (changesGroup) {
+          changesGroup.label = `Changes ${largeFilesCount > 0 ? `(${largeFilesCount})` : ''}`;
+          changesGroup.badge = largeFilesCount;
+          changesGroup.badgeColor = new vscode.ThemeColor('errorForeground');
+        }
+      } else {
+        // Reset to default if no large files
+        repository.sourceControl.inputBox.placeholder = 'Message';
+        
+        // Reset the Changes section label
+        const changesGroup = repository.sourceControl.groups.find((group: any) => group.id === 'workingTree');
+        if (changesGroup) {
+          changesGroup.label = 'Changes';
+          changesGroup.badge = undefined;
+        }
       }
     }
   } catch (error) {

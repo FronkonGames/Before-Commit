@@ -2,7 +2,7 @@
   "name": "before-commit",
   "displayName": "Before Commit",
   "description": "Shows file sizes in the Source Control view before committing",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "icon": "images/icon.png",
   "keywords": [
     "before commit",
@@ -15,10 +15,10 @@
   "author": "Martin Bustos",
   "publisher": "FronkonGames",
   "license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/FronkonGames/Before-Commit"
-	},  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FronkonGames/Before-Commit"
+  },  
   "engines": {
     "vscode": "^1.99.0"
   },
@@ -26,23 +26,13 @@
     "SCM Providers",
     "Other"
   ],
-  "activationEvents": [
-    "onView:beforeCommit"
-  ],
+  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-    "views": {
-      "scm": [
-        {
-          "id": "beforeCommit",
-          "name": "Before Commit"
-        }
-      ]
-    },
     "commands": [
       {
         "command": "beforeCommit.refresh",
-        "title": "Refresh File Size Decorations",
+        "title": "Refresh",
         "icon": "$(refresh)"
       }
     ],
@@ -50,6 +40,7 @@
       "scm/title": [
         {
           "command": "beforeCommit.refresh",
+          "when": "scmProvider == git",
           "group": "navigation"
         }
       ]

@@ -15,9 +15,9 @@ This extension highlights files that exceed a configurable size limit in the Sou
 
 - Integrates directly with the existing "Changes" view in the Source Control panel
 - Displays file sizes in tooltips when hovering over files
+- Shows a badge with the count of large files in the "Changes" section
 - Updates automatically when files change
 - Highlights files that exceed a configurable size limit with a customizable background color
-- Adds a warning color to files that are too large
 
 ## Requirements
 
@@ -30,6 +30,7 @@ This extension highlights files that exceed a configurable size limit in the Sou
 2. Navigate to the Source Control view in VS Code
 3. Files exceeding the size limit will be highlighted with a red background (configurable)
 4. Hover over files to see their size information
+5. The "Changes" section will show a badge with the count of large files
 
 ## Extension Settings
 
@@ -37,11 +38,6 @@ This extension contributes the following settings:
 
 * `beforeCommit.sizeLimit`: File size limit in MB (default: 100). Files larger than this will be highlighted.
 * `beforeCommit.warningColor`: Background color for files that exceed the size limit (default: #ff000033 - semi-transparent red).
-
-## Known Issues
-
-- May not work with very large repositories
-- Does not show sizes for submodules
 
 ## License
 
