@@ -1,3 +1,5 @@
+[![Build Status](https://img.shields.io/github/workflow/status/FronkonGames/BeforeCommit/CI)](https://github.com/FronkonGames/BeforeCommit/actions) [![Downloads](https://img.shields.io/visual-studio-marketplace/d/FronkonGames.before-commit)](https://marketplace.visualstudio.com/items?itemName=FronkonGames.before-commit) [![Rating](https://img.shields.io/visual-studio-marketplace/r/FronkonGames.before-commit)](https://marketplace.visualstudio.com/items?itemName=FronkonGames.before-commit)
+
 # Before Commit Extension for VS Code
 
 This extension shows the size of files in the Source Control view before committing them.
@@ -35,8 +37,6 @@ This extension contributes the following settings:
 - May not work with very large repositories
 - Does not show sizes for submodules
 
-## Release Notes
+## License
 
-### 0.1.0
-
-Initial release of Before Commit extension.        
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

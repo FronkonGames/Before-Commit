@@ -2,9 +2,24 @@
   "name": "before-commit",
   "displayName": "Before Commit",
   "description": "Shows file sizes in the Source Control view before committing",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "keywords": [
+    "before commit",
+    "source control",
+    "file size",
+    "file size limit",
+    "file size warning",
+    "file size highlight"
+  ],
+  "author": "Martin Bustos",
+  "publisher": "FronkonGames",
+  "license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/FronkonGames/Before-Commit"
+	},  
   "engines": {
-    "vscode": "^1.60.0"
+    "vscode": "^1.99.0"
   },
   "categories": [
     "SCM Providers",
@@ -69,11 +84,5 @@
     "@typescript-eslint/parser": "^4.26.0",
     "eslint": "^7.32.0",
     "typescript": "^4.9.5"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "vscode": "^1.1.34"
   }
 }

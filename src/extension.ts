@@ -45,12 +45,15 @@ class BeforeCommitProvider implements vscode.TreeDataProvider<GitFileItem> {
   }
 
   refresh(): void {
+    console.log('Refreshing tree view');
     this.getGitFiles().then(() => {
-      this._onDidChangeTreeData.fire();
+      console.log('Git files updated, firing event');
+      this._onDidChangeTreeData.fire(undefined);  // Pass undefined explicitly
     });
   }
 
   async getGitFiles(): Promise<void> {
+    console.log('Getting git files, workspace root:', this.workspaceRoot);
     if (!this.workspaceRoot) {
       this.gitFiles = [];
       return;
@@ -58,15 +61,25 @@ class BeforeCommitProvider implements vscode.TreeDataProvider<GitFileItem> {
 
     try {
       // Get git status
+      console.log('Executing git status command');
       const { stdout } = await execAsync('git status --porcelain', { cwd: this.workspaceRoot });
       
       const files: GitFile[] = [];
       const lines = stdout.split('\n').filter(line => line.trim() !== '');
+      console.log(`Found ${lines.length} changed files`);
       
       for (const line of lines) {
         const status = line.substring(0, 2).trim();
         const filePath = line.substring(3).trim();
+        console.log(`Processing file: ${filePath} with status: ${status}`);
+        
+        if (!filePath) {
+          console.log('Empty file path, skipping');
+          continue;
+        }
+        
         const fullPath = path.join(this.workspaceRoot, filePath);
+        console.log(`Full path: ${fullPath}`);
         
         try {
           const stats = fs.statSync(fullPath);
@@ -99,6 +112,7 @@ class BeforeCommitProvider implements vscode.TreeDataProvider<GitFileItem> {
       }
       
       this.gitFiles = files;
+      console.log(`Updated gitFiles array with ${files.length} files`);
     } catch (error) {
       console.error('Error getting git files:', error);
       this.gitFiles = [];
@@ -121,7 +135,9 @@ class BeforeCommitProvider implements vscode.TreeDataProvider<GitFileItem> {
   }
 
   async getChildren(element?: GitFileItem): Promise<GitFileItem[]> {
+    console.log('Getting children, element:', element);
     if (!this.workspaceRoot) {
+      console.log('No workspace root found');
       vscode.window.showInformationMessage('No git repository found in workspace');
       return Promise.resolve([]);
     }
@@ -131,23 +147,28 @@ class BeforeCommitProvider implements vscode.TreeDataProvider<GitFileItem> {
     } else {
       // Get configuration values
       const config = vscode.workspace.getConfiguration('beforeCommit');
-      const sizeLimit = config.get<number>('sizeLimit', 100) * 1024 * 1024; // Convert MB to bytes
-      const warningColor = config.get<string>('warningColor', '#ff000033'); // Default is semi-transparent red
+      const sizeLimit = config.get<number>('sizeLimit', 100) * 1024 * 1024;
+      const warningColor = config.get<string>('warningColor', '#ff000033');
+      console.log(`Config: sizeLimit=${sizeLimit}, warningColor=${warningColor}`);
 
-      return this.gitFiles.map(file => new GitFileItem(
-        file.path,
-        file.size,
-        file.sizeInBytes,
-        file.status,
-        vscode.TreeItemCollapsibleState.None,
-        {
-          command: 'vscode.open',
-          title: 'Open File',
-          arguments: [vscode.Uri.file(path.join(this.workspaceRoot!, file.path))]
-        },
-        sizeLimit,
-        warningColor
-      ));
+      console.log(`Creating tree items for ${this.gitFiles.length} files`);
+      return this.gitFiles.map(file => {
+        console.log(`Creating tree item for ${file.path}`);
+        return new GitFileItem(
+          file.path,
+          file.size,
+          file.sizeInBytes,
+          file.status,
+          vscode.TreeItemCollapsibleState.None,
+          {
+            command: 'vscode.open',
+            title: 'Open File',
+            arguments: [vscode.Uri.file(path.join(this.workspaceRoot!, file.path))]
+          },
+          sizeLimit,
+          warningColor
+        );
+      });
     }
   }
 }
@@ -160,31 +181,57 @@ class GitFileItem extends vscode.TreeItem {
     public readonly status: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
     public readonly command?: vscode.Command,
-    private sizeLimit: number = 100 * 1024 * 1024, // Default 100MB
-    private warningColor: string = '#ff000033' // Default semi-transparent red
+    private sizeLimit: number = 100 * 1024 * 1024,
+    private warningColor: string = '#ff000033'
   ) {
     super(label, collapsibleState);
+    console.log(`Creating GitFileItem: ${label}, size: ${size}, status: ${status}`);
     this.tooltip = `${label} (${size})`;
     this.description = `${size} - ${status}`;
     
-    // Set icon based on status using ThemeIcon.File and codicons
-    if (status === 'Modified') {
-      this.iconPath = { id: 'edit' };  // Or use ThemeIcon.Edit if available
-    } else if (status === 'Added') {
-      this.iconPath = { id: 'add' };   // Or use ThemeIcon.Add if available
-    } else if (status === 'Deleted') {
-      this.iconPath = { id: 'trash' }; // Or use ThemeIcon.Trash if available
-    } else {
-      this.iconPath = { id: 'file' };  // Or use ThemeIcon.File if available
+    // Set icon based on status using ThemeIcon
+    console.log(`Setting icon for status: ${status}`);
+    try {
+      if (status === 'Modified') {
+        this.iconPath = vscode.ThemeIcon.File;
+        // Or use a codicon directly
+        this.iconPath = { id: 'edit' };
+      } else if (status === 'Added') {
+        this.iconPath = { id: 'add' };
+      } else if (status === 'Deleted') {
+        this.iconPath = { id: 'trash' };
+      } else {
+        this.iconPath = { id: 'file' };
+      }
+      console.log('Icon set successfully');
+    } catch (error) {
+      console.error('Error setting icon:', error);
     }
 
     // Apply background color if file size exceeds limit
+    console.log(`Checking file size: ${sizeInBytes} > ${sizeLimit}`);
     if (sizeInBytes > sizeLimit) {
+      console.log('File exceeds size limit, setting contextValue and resourceUri');
       // Set a custom context value to identify large files
       this.contextValue = 'largeFile';
       
-      // Set the resourceUri for the file
-      this.resourceUri = vscode.Uri.file(label);
+      try {
+        // Use an absolute path for the resourceUri
+        // The label is likely a relative path, so we need to make it absolute
+        console.log(`Creating Uri from: ${label}`);
+        // Get the workspace root from the command arguments if available
+        const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+        if (workspaceRoot) {
+          const absolutePath = path.isAbsolute(label) ? label : path.join(workspaceRoot, label);
+          this.resourceUri = vscode.Uri.file(absolutePath);
+        } else {
+          // Fallback to just using the label
+          this.resourceUri = vscode.Uri.file(label);
+        }
+        console.log('ResourceUri set successfully:', this.resourceUri);
+      } catch (error) {
+        console.error('Error setting resourceUri:', error);
+      }
     }
   }
 
@@ -192,22 +239,27 @@ class GitFileItem extends vscode.TreeItem {
 }
 
 export function activate(context: vscode.ExtensionContext) {
+  console.log('Activating BeforeCommit extension');
+  
   // Get the Git SCM provider
   const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;
   if (!gitExtension) {
+    console.error('Git extension not found');
     vscode.window.showErrorMessage('Git extension not found');
     return;
   }
 
+  console.log('Git extension found, getting API');
   const git = gitExtension.getAPI(1);
   
   // Watch for repository changes
   git.onDidOpenRepository(() => {
-    // Set up file size decorations
+    console.log('Repository opened, setting up decorations');
     setupFileSizeDecorations(context);
   });
 
   // Set up decorations for any repositories that are already open
+  console.log(`Found ${git.repositories.length} repositories`);
   if (git.repositories.length > 0) {
     setupFileSizeDecorations(context);
   }
