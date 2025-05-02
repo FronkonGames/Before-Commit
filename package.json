@@ -1,0 +1,79 @@
+{
+  "name": "before-commit",
+  "displayName": "Before Commit",
+  "description": "Shows file sizes in the Source Control view before committing",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:beforeCommit"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "scm": [
+        {
+          "id": "beforeCommit",
+          "name": "Before Commit"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "beforeCommit.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "beforeCommit.refresh",
+          "when": "view == beforeCommit",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Before Commit",
+      "properties": {
+        "beforeCommit.sizeLimit": {
+          "type": "number",
+          "default": 100,
+          "description": "File size limit in MB. Files larger than this will be highlighted."
+        },
+        "beforeCommit.warningColor": {
+          "type": "string",
+          "default": "#ff000033",
+          "description": "Background color for files that exceed the size limit. Use RGBA hex format (e.g., #ff000033 for semi-transparent red)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^14.18.63",
+    "@types/vscode": "^1.99.1",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "eslint": "^7.32.0",
+    "typescript": "^4.9.5"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vscode": "^1.1.34"
+  }
+}
